@@ -1,92 +1,205 @@
-# Momentum — Unified Payments Platform Demo
+# Momentum — AI-Native Unified Payments Platform
 
-Momentum is a portfolio-grade full-stack demo of a unified U.S. payments control room. It combines simulated person-to-person payments, simulated merchant QR/contactless flows, bill-plan intelligence, commute guidance, an explainability log, and a voice assistant named Yuna.
+> **Live Production Demo:** [https://momentum-wise-pay.lovable.app](https://momentum-wise-pay.lovable.app)  
+> *A unified instant payment infrastructure for the United States (UPI-inspired), featuring the "Hey Yuna" voice assistant and automated financial guardrails.*
 
-> **Demo boundary:** Momentum is not a licensed financial product. It does not move real money, connect to real banks, perform real KYC/identity verification, switch real providers, buy tickets, or provide investing, insurance marketplace, precious-metals, or lending functionality. Simulated systems are labeled in the UI and in server comments.
+Momentum is a portfolio-grade full-stack demo of a unified U.S. payments control room. It combines simulated person-to-person handle payments, contactless QR/merchant checkouts, autonomous bill-plan optimization, commute transit guidance, an explainability audit log, and an in-browser voice assistant named **Yuna**.
 
-## Live demo
+> **Demo Boundary:** Momentum is not a licensed financial institution. It does not move real money, connect to real banks, perform real KYC, switch real utility providers, or purchase live transit tickets. All financial rails and mock balances are safely simulated and isolated.
 
-The current WebDev deployment is available at:
+---
 
-**https://3000-il5kydoenweugyeuk1w0e-fb9562fe.us1.manus.computer**
+## 🧠 Multi-Agent AI Orchestration & Architecture
 
-The URL is a live demo environment for this project. Use **Preview the demo** to explore the experience without signing in. Sign in with Manus to exercise the authenticated database-backed procedures. The app automatically seeds a clearly simulated profile, contacts, bills, market plans, transactions, and audit entries for a newly seen user.
+This project was engineered through an advanced multi-agent workflow, coordinating specialized frontier models across design, autonomous code generation, and production edge engineering:
 
-## Architecture
+```text
+[ Product Strategy & Reasoning ] ---> [ 0-to-1 Scaffolding ] ---> [ Production Edge Engineering ]
+         Claude 3.5 Sonnet                     Manus AI                          Lovable
+ (System Specs, Schemas, Prompts)       (Full-Stack Rapid Proto)         (DSP Voice, TanStack, Deploy)
 
-Momentum uses the WebDev `web-db-user` scaffold: React 19, Vite, Tailwind CSS, Express, tRPC, Drizzle ORM, MySQL/TiDB, S3-compatible storage, and Manus OAuth. The client uses a responsive dashboard shell with a persistent sidebar on desktop and a compact header on mobile. Server operations are typed tRPC procedures under `server/routers.ts` and database helpers under `server/db.ts`.
 
-The shared data layer includes users, profiles, contacts, transactions, bills, bill plans, AI controls, escalations, notifications, and audit logs. All timestamps are stored server-side and displayed in the viewer’s local timezone. The P2P daily limit is a hard $2,500 demo rule. PIN confirmation is required by the payment procedures, while biometric confirmation records a server-side PIN-equivalent event.
+1. Claude (Anthropic) — System Architecture & Reasoning Partner
 
-The monthly bill scan is implemented as an HTTP callback at `/api/scheduled/monthly-scan`. It is intentionally not an in-process timer; the production platform can call the endpoint through its scheduled-job system after deployment. The endpoint authenticates the scheduled caller and runs the deterministic guardrail engine for each seeded profile.
 
-## Three-agent design
 
-### Yuna — voice assistant
 
-Yuna supports microphone-tap capture in the UI. Audio is uploaded to platform storage, transcribed through the built-in Whisper-compatible speech-to-text helper, then parsed through the built-in LLM helper into a strict JSON intent. A full contact name must be present; the UI performs a spoken/visual-style readback and requires an explicit confirmation before calling the same P2P transfer procedure used by manual payments. No voice shortcut bypasses PIN or biometric authentication.
+Domain Modeling & Spec Engineering: Formulated the product vision and domain logic for a US-adapted unified payment protocol (inspired by NPCI's UPI), architecting handle-based peer-to-peer resolution, contactless QR merchant schemes, and bill optimization guardrails.
 
-The UI includes a privacy-first trigger state. The explicit microphone capture path is real and network-backed only after user action. A production-grade offline wake-word model was not bundled because the scaffold does not include a local keyword model; see the changelog for this honest limitation.
 
-### Bill Advisor
+Deterministic Guardrail Specification: Designed the core security invariants for autonomous financial actions, mandating a strict Human-In-The-Loop (HITL) biometric/PIN gate before any ledger mutation.
 
-Bill Advisor compares seeded bill records with seeded market-plan records using monthly cost, usage-pattern fit, and the user’s AI Controls. Default/first-run behavior is always ask. If auto-switching is enabled and a recommendation is inside both thresholds, the demo updates the simulated plan and writes an explainability record. Otherwise it creates a 48-hour escalation and writes a reasoned audit event. Every decision fans out to push, email, in-app inbox, and a clearly simulated/logged SMS channel.
 
-### Commute Agent
+Conversational AI Prompt & Schema Design: Authored the structured intent extraction schema (Zod/JSON Schema) and prompt guidelines to resolve colloquial payment phrasing (e.g., "twelve fifty" → 1250 cents, note isolation, entity resolution against local contact lists).
 
-Commute Agent uses a simulated city selector in place of real geolocation. It recognizes Chicago/CTA, New York/OMNY, San Francisco/Clipper, and Washington, DC/SmarTrip from a small reference set. It provides guidance only: the user is told to tap the same existing contactless Momentum card. It does not create a transit ticket purchase flow or a separate payment rail.
 
-## What is real vs. simulated
 
-| Capability | Status | Notes |
-| --- | --- | --- |
-| Manus OAuth session | Real | Uses the scaffold’s OAuth/session flow. |
-| Database persistence | Real | MySQL/TiDB via Drizzle. New users receive seeded demo rows. |
-| Voice speech-to-text | Real API-backed | Uses the built-in transcription helper after explicit microphone capture. |
-| Yuna intent parsing | Real API-backed | Uses the built-in LLM helper with strict JSON schema output. |
-| P2P settlement | Simulated | Writes a demo ledger row; does not move money. |
-| Merchant QR/NFC payment | Simulated | QR/NFC surfaces and receipts are UI/demo records only. |
-| Bank account linking | Simulated | “Demo Community Bank” is mock data. |
-| KYC / ID / SSN | Simulated | Profile status is explicitly labeled simulated. |
-| PIN and biometric | Demo security model | PIN/biometric steps are represented; server records the required auth event. |
-| Bill market data | Simulated | Seeded plans and usage fit values, no providers contacted. |
-| Agentic switching | Simulated | Database-only plan update inside explicit guardrails. |
-| Push/email/SMS fan-out | Simulated/logged | Notifications are persisted; SMS is labeled simulated. |
-| City/geolocation | Simulated | City is user-selected from a reference set. |
-| Transit payment | Guidance only | Reuses the conceptual contactless payment capability; no transit ticketing. |
-| Investing, insurance marketplace, gold/silver/ETFs, loans | Stubbed | Navigation is intentionally not built as working financial functionality. |
 
-## Local setup
+2. Manus AI — Autonomous Scaffolding & Rapid Prototyping Agent
 
-1. Install Node.js 22 and pnpm.
-2. Install dependencies with `pnpm install`.
-3. Set the platform environment variables used by the WebDev scaffold, including `DATABASE_URL`, `JWT_SECRET`, OAuth variables, and the built-in Forge variables. Do not commit `.env` files.
-4. Generate/apply schema changes with `pnpm drizzle-kit generate` and the project’s database migration flow.
-5. Run the app with `pnpm dev`.
-6. Run `pnpm test`, `pnpm check`, and `pnpm build` before publishing.
 
-Useful commands:
 
-```bash
-pnpm dev
-pnpm test
-pnpm check
-pnpm build
-```
 
-## Repository map
+Zero-to-One Full-Stack Scaffolding: Executed the initial autonomous implementation from Claude’s architectural blueprints, generating the baseline dashboard layout, navigation flow, and early schema definitions.
 
-- `client/src/pages/Home.tsx` — overview, payments, bills, services, activity, controls, and Yuna UI.
-- `client/src/components/DashboardLayout.tsx` — responsive dashboard shell and preview entry point.
-- `server/routers.ts` — typed tRPC API contracts.
-- `server/db.ts` — seed, ledger, bill-agent, notification, audit, and commute helpers.
-- `server/_core/index.ts` — Express bootstrap and scheduled callback.
-- `drizzle/schema.ts` — database schema.
-- `shared/demoRules.ts` — tested hard-limit, guardrail, and auth-event rules.
-- `server/platform.rules.test.ts` — critical rule tests.
 
-## Known limitations and scope cuts
+Rapid Component Assembly: Bootstrapped the initial frontend view hierarchy (DashboardLayout, Home, payment action panels, commute transit view) and configured early tRPC API schemas, drastically accelerating time-to-first-interactive-demo.
 
-This is a portfolio demo, not a production financial system. Real banking, settlement, identity verification, KYC, card tokenization, NFC hardware integration, merchant acquiring, biller/provider APIs, transit ticketing, investments, insurance marketplace, precious metals, ETFs, loans, and real notification providers are intentionally out of scope. The wake-word design is represented with a local privacy state and explicit microphone capture; a full offline keyword model was not shipped. The scheduled callback is implemented and ready for a production deployment’s scheduler, but activating a recurring platform job requires the deployed project URL and platform scheduler lifecycle.
 
-There is no native mobile application, no real external account linking, and no real payment-card provisioning. Those boundaries are deliberate and keep the app honest with the project brief.
+
+
+3. Lovable — Edge Production Engineering, DSP Voice Pipeline & Runtime Migration
+
+
+
+
+Decoupling & Migration to Edge Architecture: De-coupled the prototype from proprietary Manus/Node runtimes and vendor-locked auth dependencies; re-architected the application onto TanStack Start v1 (React 19 SSR on Edge Workers) with a zero-auth, browser-persisted mock ledger shim.
+
+
+In-Browser Audio DSP Pipeline: Engineered a client-side audio capture system using AudioContext and custom ScriptProcessorNode to record clean mono WAV audio with real-time decibel metering, automatic speech-boundary detection (auto-stop on silence), and client-side base64 encoding.
+
+
+Two-Stage Multi-Modal AI Engine:
+
+
+
+Streaming Speech-to-Text (STT): Implemented server-side streaming speech transcription via openai/gpt-transcribe through the Lovable AI Gateway, dynamically injecting the user's contact book as lexical context keywords to minimize phonetic hallucinations on proper names.
+
+
+Constrained JSON-Schema Intent Extraction: Routed normalized transcripts into openai/gpt-6-astra under rigid json_schema response formats (send_money, pay_merchant, check_balance), ensuring deterministic payloads and eliminating unstructured LLM drift.
+
+
+
+
+
+
+Readback Synthesis & Verification UI: Integrated native speech synthesis for vocal confirmation with an interactive confirmation card, fallback manual input modes, and vitest route regression suites.
+
+
+
+
+
+
+🎯 Autonomous Agent Systems Inside the App
+
+
+1. Hey Yuna — Voice Payment Agent
+
+
+
+Yuna captures audio directly in the browser via a customized Web Audio DSP pipeline. The recording is converted into clean mono WAV audio, transcribed via streaming STT, and parsed with deterministic JSON schemas.
+
+
+
+
+
+Conversational Normalization: Understands spoken currency (e.g. "ten dollars and thirty cents" or "ten thirty"), extracts payee names, and decouples payment memos.
+
+
+Safety Invariant (HITL): Yuna never moves money autonomously. She formats a structured confirmation card requiring explicit 4-digit PIN or biometric verification before any balance mutation occurs.
+
+
+
+
+2. Bill Advisor — Autonomous Plan Optimization
+
+
+
+Compares seeded household utility and service bills against market rates using usage patterns and the user's AI Controls.
+
+
+
+
+
+If Auto-Switching is enabled and savings exceed configured thresholds, the system applies the optimization and writes a deterministic explainability audit record.
+
+
+If thresholds are exceeded or confirmation is required, it queues a 48-hour escalation with notifications fanned out across push, email, and in-app feeds.
+
+
+
+
+3. Commute Agent — Contextual Transit Passes
+
+
+
+Recognizes regional transit networks (Chicago CTA, New York OMNY, SF Clipper, DC SmarTrip) based on selected location. It provides route guidance and integrates tap-and-go contactless card passes into the unified payment stream.
+
+
+
+
+
+⚖️ What Is Real vs. Simulated
+
+
+Capability	Status	Implementation Details
+Voice Speech-to-Text	Real API	In-browser Web Audio DSP recording streamed to openai/gpt-transcribe.
+Yuna Intent Extraction	Real API	openai/gpt-6-astra with rigid JSON-Schema structured responses.
+Speech Readback	Real API	Web Speech API text-to-speech synthesis with mute toggles.
+Edge Server Logic	Real Edge	TanStack Start createServerFn executing on Cloudflare Edge runtimes.
+P2P Ledger & Settlement	Simulated	Client-side reactive persistent store (localStorage); $2,500 daily limit enforced.
+Merchant QR / NFC	Simulated	Real-time QR code generation, camera simulation, and instant receipt generation.
+PIN & Biometric Auth	Simulated Security	Interactive 4-digit PIN and WebAuthn-style biometric verification gates.
+Bill Market Data	Simulated	Heuristic rule-based comparison engine with audit log explainability.
+Transit Passes	Simulated Guidance	Contextual pass recommendations; taps into virtual card rails.
+
+
+
+
+🛠️ Tech Stack
+
+
+
+
+Framework: TanStack Start v1 (Full-Stack React 19 SSR on Edge Workers)
+
+
+Build Engine: Vite 7
+
+
+Styling: Tailwind CSS v4, Radix UI Primitives, Lucide Icons
+
+
+AI & Multi-Modal Engine: Lovable AI Gateway (openai/gpt-transcribe for STT, openai/gpt-6-astra for JSON-Schema Intent Extraction)
+
+
+Audio Engineering: HTML5 Web Audio API (AudioContext, ScriptProcessorNode, PCM-to-WAV encoder)
+
+
+State Management: Custom reactive local-storage ledger with tRPC-shaped query/mutation shims
+
+
+Testing: Vitest
+
+
+
+
+
+
+💻 Local Development
+
+
+# Clone the repository
+git clone https://github.com/aaqibsyed412/momentum-unified-payments.git
+cd momentum-unified-payments
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+
+
+
+Open http://localhost:8080 to view the application.
+
+
+
+
+
+📄 License & Attribution
+
+
+
+Designed and engineered by Syed Rafiuddin Aaqib. Built as a demonstration of multi-agent software engineering using Claude 3.5 Sonnet, Manus AI, and Lovable.
