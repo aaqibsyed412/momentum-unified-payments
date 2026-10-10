@@ -13,8 +13,8 @@ Momentum is a portfolio-grade full-stack demo of a unified U.S. payments control
 
 This project was engineered through an advanced multi-agent workflow, coordinating specialized frontier models across design, autonomous code generation, and production edge engineering:
 
-```text
-[ Product Strategy & Reasoning ] ---> [ 0-to-1 Scaffolding ] ---> [ Production Edge Engineering ]
+
+# [ Product Strategy & Reasoning ] ---> [ 0-to-1 Scaffolding ] ---> [ Production Edge Engineering ]
          Claude 3.5 Sonnet                     Manus AI                          Lovable
  (System Specs, Schemas, Prompts)       (Full-Stack Rapid Proto)         (DSP Voice, TanStack, Deploy)
 
