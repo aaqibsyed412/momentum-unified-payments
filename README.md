@@ -183,8 +183,10 @@ Testing: Vitest
 git clone https://github.com/aaqibsyed412/momentum-unified-payments.git
 cd momentum-unified-payments
 
+
 # Install dependencies
 npm install
+
 
 # Start development server
 npm run dev
@@ -202,4 +204,5 @@ Open http://localhost:8080 to view the application.
 
 
 
-Designed and engineered by Syed Rafiuddin Aaqib. Built as a demonstration of multi-agent software engineering using Claude 3.5 Sonnet, Manus AI, and Lovable.
+Designed and engineered by Syed Rafiuddin Aaqib. 
+Built as a demonstration of multi-agent software engineering using Claude 3.5 Sonnet, Manus AI, and Lovable.
